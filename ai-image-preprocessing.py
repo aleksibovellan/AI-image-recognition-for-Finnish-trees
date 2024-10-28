@@ -4,8 +4,7 @@
 
 # IMAGE FILE PRE-PROCESSING SCRIPT
 
-# NOTE: The pre-processing of the tree images for the learning has ALREADY been done - they are in the folder "processed_trees". So there's no need to pre-process anything.
-# However, if pre-processing is needed for new images, this pre-processing script requires a folder 'trees' and its sub folders named after various Finnish trees, and the images in those sub folders.
+# NOTE: This pre-processing script requires a folder 'trees' and its sub folders named after various Finnish trees, and your own original tree images in those sub folders.
 # Original tree images are not included in this repository's "trees" folder, but the empty folder structure for it is provided just in case.
 
 
