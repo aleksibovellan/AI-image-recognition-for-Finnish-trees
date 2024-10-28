@@ -1,6 +1,6 @@
 # AI/ML Trained Image Recognition for Finnish trees in Python with Gradio Web Interface
 
-**User interacts through a Gradio Web Interface to upload images of Finnish trees, and the trained AI/ML model recognizes the tree species in question. Training requires user's own tree pictures for pre-processing and training. See further in README for more info.**
+**Human-user interacts through a Gradio Web Interface to upload images of Finnish trees, and the trained AI/ML model recognizes the tree species in the images. Training requires user's own tree pictures for pre-processing and training. See further in README for more info.**
 
 **Author:** Aleksi Bovellan (2024)
 
