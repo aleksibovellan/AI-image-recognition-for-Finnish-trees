@@ -1,4 +1,4 @@
-# AI/ML Trained Image Recognition for Finnish trees with a Web Interface
+# AI/ML Trained Image Recognition for Finnish trees in Python with Gradio Web Interface
 
 **Author:** Aleksi Bovellan (2024)
 
