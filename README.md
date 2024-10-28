@@ -2,7 +2,7 @@
 
 **Author:** Aleksi Bovellan (2024)
 
-**Technologies:** ResNet18 pre-trained model from PyTorch, Gradio, Python 3.10
+**Technologies:** ResNet18 pre-trained model from PyTorch, Gradio Web Interface, Python 3.10
 
 **Dataset:** Custom dataset with images of six tree species: `koivu` (birch), `kuusi` (spruce), `manty` (pine), `pihlaja` (rowan), `tammi` (oak), and `vaahtera` (maple). Data is preprocessed (resized, augmented) using PyTorch's `torchvision.transforms`.
 
@@ -22,7 +22,7 @@
 
 - "ai-image-interface.py" - Python script for the model and Gradio web interface - it serves a local web page.
 
-- Folder "trees" - This folder should include all the tree name subfolders, and your original images in them. The image pre-processing script needs this folder to build from. The original images are not provided in this repository, but the folder structure is just in case.
+- Folder "trees" - This folder should include subfolders for various Finnish tree names, and your original tree images in them. The image pre-processing script needs this folder structure and files to build from. The original images are not provided in this repository, but the folder structure is just in case.
 
 - "README.md" - this file for instructions
 
@@ -56,7 +56,7 @@ pip install torch torchvision Pillow gradio scikit-learn numpy opencv-python
 
 4. Start the Gradio web interface: python3 ai-image-interface.py
 
-5. Use the locally served web page interface to upload an example picture of a tree and press button "SUBMIT" for the result.
+5. Use the locally served Gradio web page interface to upload an example picture of a tree and press button "SUBMIT" for the result.
 
 
 # Editing the training script - epoch value to adjust the training time:
