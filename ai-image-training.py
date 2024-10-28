@@ -4,7 +4,8 @@
 
 # AI/ML IMAGE MODEL TRAINING SCRIPT FOR NEW INTELLIGENCE
 
-# Requires a folder 'processed_trees' resulted from running the image pre-processing script beforehand.
+# Requires a folder 'processed_trees', which is created by finishing the image pre-processing script beforehand.
+# The resulted training intelligence from this script will be stored into a file "tree_species_model.pth".
 
 
 # User-friendly settings: Define number of epochs, learning rate, and patience for early stopping
