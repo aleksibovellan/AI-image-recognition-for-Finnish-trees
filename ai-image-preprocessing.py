@@ -1,11 +1,13 @@
 # AI/ML Trained Image Recognition for Finnish trees with a Web Interface
-# Author: Aleksi Bovellan
+# Author: Aleksi Bovellan (2024)
 
 
 # IMAGE FILE PRE-PROCESSING SCRIPT
 
-# NOTE: This pre-processing script requires a folder 'trees' and its sub folders named after various Finnish trees, and your own original tree images in those sub folders.
-# Original tree images are not included in this repository's "trees" folder, but the empty folder structure for it is provided just in case.
+# NOTE: This pre-processing script requires a folder 'trees' and its subfolders named after various Finnish trees.
+# Your own original tree images should be in those subfolders.
+# Original tree images are not included in this repository's "trees" folder, but the empty folder structure is just in case.
+# Processed images by this script will be stored into a new folder "processed_trees".
 
 
 # Import necessary libraries
