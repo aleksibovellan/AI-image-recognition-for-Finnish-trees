@@ -16,24 +16,15 @@
 
 # INCLUDED FILES AND FOLDERS:
 
-- "ai-image-preprocessing.py" - NOTE: The image pre-processing is already done, so there's no need to do it again - unless you'd want to add some new original tree images, etc. In that case, this Python script pre-processes the original tree image files so that they will work with the training algorithm. It expects a folder "trees" in the same directory, which has sub folders for each Finnish tree name. Each sub folder includes the actual original image files in JPG, JPEG or PNG format. The pre-processing then creates a new folder "processed_trees" which gets the new processed image files.
+- "ai-image-preprocessing.py" - This Python script pre-processes your own original image files of Finnish trees, so that they will work with the training algorithm. It expects a folder "trees" in the same directory, which has subfolders for each Finnish tree name. Then add your own pictures of trees into their relevant subfolders. Those original image files should be in JPG, JPEG, or PNG formats, and preferably in RGB color space or something similarily simple as that - otherwise the pre-processing script might skip some files if they are in a too large and complicated color space. When finished, the pre-processing script finally creates a new folder "processed_trees", which will house all the new processed image files.
 
-- "ai-image-training.py" - NOTE: The training is also already done, so there's no need to do it again, unless you'd want to change some training parameters from the training script itself and run it again for better intelligence results. This is the Python script for the automated training process after image pre-processing is already done. 
+- "ai-image-training.py" - This is the Python script for the automated training process after image pre-processing is already done. The training results are stored in a new file "tree_species_model.pth". 
 
 - "ai-image-interface.py" - Python script for the model and Gradio web interface - it serves a local web page.
 
-- Folder "trees" - This folder should include all the tree sub folders and original images in them. The image pre-processing script needs this folder to build from. The original images are not provided in this repository, but the folder structure is just in case.
+- Folder "trees" - This folder should include all the tree name subfolders, and your original images in them. The image pre-processing script needs this folder to build from. The original images are not provided in this repository, but the folder structure is just in case.
 
 - "README.md" - this file for instructions
-
-
-PRE-PROVIDED INTELLIGENCE DATA:
-
-- Folder "processed_trees" - Includes all pre-processed tree pictures. The training script needs this one to learn.
-
-- "tree_species_model.pth" - Includes the learned training data from pre-processed tree images and training.
-
-- "model_training_data.txt" - The console output log results of the included training data.
 
 
 # SPECIAL ATTENTION TO APPLE MAC COMPUTERS:
@@ -55,16 +46,9 @@ pip install torch torchvision Pillow gradio scikit-learn numpy opencv-python
 pip install torch torchvision Pillow gradio scikit-learn numpy opencv-python
 
 
-# USAGE WITH THE PRE-PROVIDED INTELLIGENCE DATA:
+# USAGE:
 
-Just run as is, and then use the local web page to identify user-uploaded pictures of trees:
-
-python3 ai-image-interface.py
-
-
-# USAGE WITHOUT ANY PRE-PROVIDED INTELLIGENCE DATA:
-
-1. Ensure that your directory has all the provided 3 x Python scripts, and a folder "trees", with subfolders named after Finnish trees. Your original image files (JPG, JPEG, PNG) should be in those subfolders.
+1. Ensure that your directory has all the provided 3 x Python scripts, and a folder "trees", with subfolders named after Finnish trees, and your own original tree images in those subfolders.
 
 2. Run the image pre-processing script: python3 ai-image-preprocessing.py
 
@@ -95,7 +79,6 @@ Accuracy measures how many of the model’s predictions are correct. It's one of
 60-80% accuracy: A good range indicating the model is making solid predictions but still has room for improvement.
 
 80%+ accuracy: Strong performance, indicating the model is well-tuned and likely generalizing well.
-
 
 **F1-Score:**
 
@@ -132,3 +115,6 @@ The training script runs using whatever the host computer automatically decides 
 # Gradio Interface Script Flowchart
 
 ![Solutions-Interface-flowchart](https://github.com/user-attachments/assets/9e5a8115-cf69-481e-805c-6c556da1b2fa)
+
+---
+
