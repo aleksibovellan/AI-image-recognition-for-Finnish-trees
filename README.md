@@ -6,7 +6,7 @@
 
 **Technologies:** ResNet18 pre-trained model from PyTorch, Gradio Web Interface, Python 3.10
 
-**Dataset:** Custom dataset with images of six tree species: `koivu` (birch), `kuusi` (spruce), `manty` (pine), `pihlaja` (rowan), `tammi` (oak), and `vaahtera` (maple). Data is preprocessed (resized, augmented) using PyTorch's `torchvision.transforms`.
+**Dataset:** User-provided dataset with images of six tree species: `koivu` (birch), `kuusi` (spruce), `manty` (pine), `pihlaja` (rowan), `tammi` (oak), and `vaahtera` (maple). Data is preprocessed (resized, augmented) using PyTorch's `torchvision.transforms`.
 
 **Python extensions:** torch, torchvision, Pillow, gradio, scikit-learn, numpy, opencv-python
 
