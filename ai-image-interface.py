@@ -1,5 +1,5 @@
 # AI/ML Trained Image Recognition for Finnish trees with a Web Interface
-# Author: Aleksi Bovellan
+# Author: Aleksi Bovellan (2024)
 
 
 # AI/ML MODEL AND MAIN GRADIO WEB INTERFACE SCRIPT
