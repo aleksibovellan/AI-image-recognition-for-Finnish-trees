@@ -1,23 +1,19 @@
-# AI/ML Trained Image Recognition for Finnish trees with a Web Interface
-# Author: Aleksi Bovellan (2024)
+# AI/ML Trained Image Recognition for Finnish Trees with a Web Interface
+# Author: Aleksi Bovellan
 
 
 # AI/ML IMAGE MODEL TRAINING SCRIPT FOR NEW INTELLIGENCE
 
-# Requires a folder 'processed_trees', which is created by finishing the image pre-processing script beforehand.
-# The resulted training intelligence from this script will be stored into a file "tree_species_model.pth".
+# Requires a folder 'processed_trees' resulted from running the image pre-processing script beforehand.
 
 
 # User-friendly settings: Define number of epochs, learning rate, and patience for early stopping
 
 # Example: Setting an epoch value from "20" to "100" takes around 10 minutes on a year 2020 MacBook M1 Air
 NUM_EPOCHS = 100  # Number of training epochs
-
 LEARNING_RATE = 0.0010  # Fine-tuned learning rate (slower for better precision)
-EARLY_STOPPING_PATIENCE = 15  # Stop training if no improvement for 15 epochs
+EARLY_STOPPING_PATIENCE = 10  # Stop training if no improvement for 10 epochs
 
-
-# From here on the script will proceed automatically.
 
 # Import necessary libraries
 import os
@@ -32,6 +28,9 @@ from torchvision.models import ResNet18_Weights
 
 # Set up directories
 PROCESSED_DATA_DIR = './processed_trees'  # Input folder with processed images
+
+# Set device for computation
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Image transformations for training and validation
 data_transforms = {
@@ -75,21 +74,22 @@ model.fc = nn.Linear(num_ftrs, len(full_dataset.classes))  # Output for 6 classe
 # Loss function and optimizer with a fine-tuned learning rate
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.fc.parameters(), lr=LEARNING_RATE)  # Fine-tuned learning rate
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3)
 
 # Move the model to the appropriate device (GPU or CPU)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
 # Early stopping variables
 best_val_loss = np.inf  # Initialize the best validation loss with infinity
 epochs_no_improve = 0  # Counter for epochs with no improvement
+best_epoch = 0  # Track the best epoch
 
 # Training function with early stopping
 def train_model(model, criterion, optimizer, num_epochs):
     """
     This function trains the model for the specified number of epochs. It includes early stopping.
     """
-    global best_val_loss, epochs_no_improve
+    global best_val_loss, epochs_no_improve, best_epoch
 
     for epoch in range(num_epochs):
         model.train()
@@ -108,15 +108,20 @@ def train_model(model, criterion, optimizer, num_epochs):
         # After each epoch, evaluate the model
         val_loss = evaluate_model(model, return_loss=True)
         
-        # Early stopping condition
+        # Check if validation loss improved and save the model if it did
         if val_loss < best_val_loss:
             best_val_loss = val_loss
+            best_epoch = epoch
             epochs_no_improve = 0  # Reset patience counter
             print(f"Validation loss improved to {val_loss:.4f}. Saving model...")
             torch.save(model.state_dict(), 'tree_species_model.pth')  # Save the best model
         else:
             epochs_no_improve += 1
             print(f"No improvement in validation loss for {epochs_no_improve} epochs.")
+
+        # Step the learning rate scheduler with the current validation loss
+        scheduler.step(val_loss)
+        print(f"Current learning rate: {scheduler.get_last_lr()[0]:.6f}")
         
         # Check if early stopping should trigger
         if epochs_no_improve >= EARLY_STOPPING_PATIENCE:
