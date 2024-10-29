@@ -1,6 +1,6 @@
 # AI/ML Trained Image Recognition for Finnish trees in Python with Gradio Web Interface
 
-**Human-user interacts through a Gradio Web Interface to upload images of Finnish trees, and the trained AI/ML model recognizes the tree species in the images. Training requires user's own tree pictures for pre-processing and training. See further in README for more info.**
+**Human-user interacts through a Gradio Web Interface to upload images of Finnish trees, and the trained AI/ML model recognizes the tree species in the images. Image pre-processing and training requires the user's own provided tree pictures. See further in README for more info.**
 
 **Author:** Aleksi Bovellan (2024)
 
@@ -18,7 +18,7 @@
 
 # INCLUDED FILES AND FOLDERS:
 
-- "ai-image-preprocessing.py" - This Python script pre-processes your own original image files of Finnish trees, so that they will work with the training algorithm. It expects a folder "trees" in the same directory, which has subfolders for each Finnish tree name. Then add your own pictures of trees into their relevant subfolders. Those original image files should be in JPG, JPEG, or PNG formats, and preferably in RGB color space or something similarily simple as that - otherwise the pre-processing script might skip some files if they are in a too large and complicated color space. When finished, the pre-processing script finally creates a new folder "processed_trees", which will house all the new processed image files.
+- "ai-image-preprocessing.py" - This Python script pre-processes your own original image files of Finnish trees, so that they will work with the training algorithm. It expects a folder "trees" in the same directory, which has subfolders for each Finnish tree name. Then add your own pictures of trees into their relevant subfolders. Those original image files should be in JPG, JPEG, or PNG formats, and preferably in RGB color space or something similarly simple as that - otherwise the pre-processing script might skip some files if they are in a too large and complicated color space. When finished, the pre-processing script finally creates a new folder "processed_trees", which will house all the new processed image files.
 
 - "ai-image-training.py" - This is the Python script for the automated training process after image pre-processing is already done. The training results are stored in a new file "tree_species_model.pth". 
 
@@ -46,6 +46,12 @@ pip install torch torchvision Pillow gradio scikit-learn numpy opencv-python
 # PRE-INSTALLATION REQUIREMENTS FOR ALL USERS:
 
 pip install torch torchvision Pillow gradio scikit-learn numpy opencv-python
+
+**ImageMagick:** Ensure ImageMagick is installed for additional image processing compatibility. This tool is used in this script to handle any images that might not normally get loaded to be processed with the standard libraries due to the image's unsupported and probably larger color-spaces or sizes.
+
+- Mac: Install with brew install imagemagick
+- Linux: Install with sudo apt-get install imagemagick
+- Windows: Download and install from ImageMagick’s official site
 
 
 # USAGE:
@@ -95,7 +101,7 @@ The F1-score balances precision and recall, making it a useful metric when you h
 0.6-1.0: Strong performance—model is predicting well across most classes.
 
 
-# CPU/GPU COMPABILITY
+# CPU/GPU COMPATIBILITY
 
 The training script runs using whatever the host computer automatically decides to use (CPU/GPU) for best performance.
 
@@ -119,4 +125,3 @@ The training script runs using whatever the host computer automatically decides 
 ![Solutions-Interface-flowchart](https://github.com/user-attachments/assets/9e5a8115-cf69-481e-805c-6c556da1b2fa)
 
 ---
-
