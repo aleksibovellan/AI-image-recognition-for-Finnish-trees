@@ -1,13 +1,12 @@
-# AI/ML Trained Image Recognition for Finnish trees with a Web Interface
+# AI/ML Trained Image Recognition for Finnish Trees with a Web Interface
 # Author: Aleksi Bovellan (2024)
 
 
 # IMAGE FILE PRE-PROCESSING SCRIPT
 
 # NOTE: This pre-processing script requires a folder 'trees' and its subfolders named after various Finnish trees.
-# Your own original tree images should be in those subfolders.
-# Original tree images are not included in this repository's "trees" folder, but the empty folder structure is just in case.
-# Processed images by this script will be stored into a new folder "processed_trees".
+# Place your original tree images in those subfolders.
+# Processed images by this script will be saved in a new folder "processed_trees".
 
 
 # Import necessary libraries
@@ -16,23 +15,24 @@ from PIL import Image, UnidentifiedImageError
 from torchvision import transforms
 import cv2
 import numpy as np
+import subprocess
 
 # Define directories
 DATA_DIR = './trees'  # Input folder containing subfolders for each tree species (e.g., 'koivu', 'kuusi')
 PROCESSED_DIR = './processed_trees'  # Output folder for processed images
 
-# Transformation pipeline: resize, augment, and convert to tensor
+# Main transformation pipeline: resize and apply only essential augmentations
 main_transform = transforms.Compose([
     transforms.Resize((224, 224)),         # Standardize size for all images
-    transforms.RandomHorizontalFlip(),      # Apply random horizontal flip
-    transforms.RandomRotation(10),          # Apply random rotation
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),  # Adjust brightness and contrast
+    transforms.RandomHorizontalFlip(),      # Apply random horizontal flip for augmentation
+    transforms.RandomRotation(10),          # Apply slight random rotation
+    # ColorJitter removed to maintain original brightness/contrast
 ])
 
 def pre_preprocess_image(image_path):
     """
     Pre-processes an image to standardize dimensions, color profile, and strip unnecessary metadata.
-    This function aims to prepare the image for compatibility with the main transformations.
+    This function prepares the image for compatibility with the main transformations.
     Parameters:
         image_path (str): Path to the original image.
     Returns:
@@ -41,14 +41,14 @@ def pre_preprocess_image(image_path):
     try:
         # Open the image using Pillow
         with Image.open(image_path) as img:
-            # Convert to RGB to ensure compatibility
-            img = img.convert("RGB")
+            # Convert to RGB to ensure compatibility if image isn’t already in RGB
+            img = img.convert("RGB") if img.mode != "RGB" else img
             
-            # Resize large images to a maximum of 1024x1024 to save memory and ensure consistency
+            # Resize if large to 1024x1024 to reduce memory usage
             if img.width > 1024 or img.height > 1024:
                 img.thumbnail((1024, 1024))  # Maintain aspect ratio within 1024x1024 bounds
             
-            # Remove EXIF data by re-saving the image to a new PIL object
+            # Remove EXIF metadata by re-saving the image to a new PIL object
             cleaned_image = Image.new("RGB", img.size)
             cleaned_image.paste(img)
 
@@ -57,23 +57,54 @@ def pre_preprocess_image(image_path):
     except UnidentifiedImageError:
         print(f"Error during pre-preprocessing of {image_path}: cannot identify image file. Attempting OpenCV fallback...")
         
-        # Attempt to load the image with OpenCV as a fallback
-        try:
-            img_cv = cv2.imread(image_path)
-            if img_cv is None:
-                print(f"OpenCV could not load {image_path}. Skipping file.")
-                return None
-            
-            # Convert OpenCV image to PIL format for compatibility with the main transform pipeline
-            img_rgb = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
-            img_pil = Image.fromarray(img_rgb)
-            img_pil.thumbnail((1024, 1024))  # Resize if necessary
+        # Attempt to load and convert the image with OpenCV as a fallback
+        return opencv_image_conversion(image_path)
 
-            return img_pil  # Return the PIL-compatible image for further processing
+def opencv_image_conversion(image_path):
+    """
+    Attempts to load and convert problematic images using OpenCV and apply additional pre-processing to make 
+    the image compatible with the rest of the script.
+    """
+    try:
+        # Load the image with OpenCV
+        img_cv = cv2.imread(image_path)
+        if img_cv is None:
+            print(f"OpenCV could not load {image_path}. Attempting ImageMagick fallback.")
+            return imagemagick_conversion(image_path)
         
-        except Exception as e:
-            print(f"Fallback failed for {image_path}: {e}")
-            return None
+        # Convert OpenCV image to PIL format for compatibility with the main transform pipeline
+        img_rgb = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(img_rgb)
+        img_pil.thumbnail((1024, 1024))  # Resize if necessary
+
+        return img_pil  # Return the PIL-compatible image for further processing
+    
+    except Exception as e:
+        print(f"OpenCV fallback failed for {image_path}: {e}")
+        return imagemagick_conversion(image_path)
+
+def imagemagick_conversion(image_path):
+    """
+    Uses ImageMagick via subprocess to forcefully convert problematic files into a standard RGB color space.
+    This only affects files that failed to load by both PIL and OpenCV.
+    """
+    try:
+        # Apply ImageMagick conversion to RGB color space
+        subprocess.run(
+            ["mogrify", "-resize", "1024x1024>", "-strip", "-colorspace", "RGB", image_path],
+            check=True
+        )
+        
+        # Re-attempt loading the converted image
+        with Image.open(image_path) as img:
+            img = img.convert("RGB")  # Ensure it is in RGB color space
+
+        print(f"Successfully processed using ImageMagick: {image_path}")
+        return img
+    
+    except Exception as e:
+        print(f"ImageMagick fallback failed for {image_path}: {e}")
+        return None
 
 def process_images():
     """
